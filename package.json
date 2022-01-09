@@ -1,0 +1,15 @@
+{
+  "name": "team-a-ecommmerce-be",
+  "version": "1.0.0",
+  "description": "This is the e-commerce backend system created by team-a",
+  "main": "server.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "TS",
+    "Backend"
+  ],
+  "author": "",
+  "license": "MIT"
+}
