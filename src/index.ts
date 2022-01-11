@@ -6,7 +6,7 @@ import { createConnection } from "typeorm";
 import "reflect-metadata";
 
 //Routes
-import router from "./modules/auth/index";
+import routes from "./modules/index";
 
 dotenv.config();
 
@@ -35,7 +35,7 @@ mongoose
 
     app.use(helmet());
 
-    app.use(router);
+    app.use(routes);
 
     modules(app);
 
