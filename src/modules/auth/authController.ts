@@ -46,12 +46,12 @@ const authController = {
       const user = await User.findOne({ email }).exec();
 
       if (!user)
-        return res.status(401).json({ message: "Email or Password is Wrong!" });
+        return res.status(401).json({ message: "User does not Exist!" });
 
       const isPasswordValid = await bcrypt.compare(password, user.password);
 
       if (!isPasswordValid)
-        return res.status(401).json({ message: "Email or Password is Wrong!" });
+        return res.status(401).json({ message: "Password is Wrong!" });
 
       return res.status(200).json({
         _id: user._id,
