@@ -1,15 +1,14 @@
-import express, { Router } from 'express'
-import authController from './authController';
+import express, { Router } from "express";
+import authController from "./authController";
 
+const router: Router = express.Router();
 
-const router : Router = express.Router()
+router.post("/register", authController.register);
 
-router.post('/register', authController.register)
+router.post("/login", authController.login);
 
-router.post('/login', authController.login)
+//router.post('/confirmPassword/:token', authController.confirmPassword)
 
-router.post('/confirmPassword/:token', authController.confirmPassword)
-
-router.get('/profile', authController.loadProfile)
+router.get("/profile", authController.loadProfile);
 
 export default router;

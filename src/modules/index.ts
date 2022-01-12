@@ -1,10 +1,10 @@
+import router from ".././modules/auth/index";
 
-const apiPrefix = '/api/v1'
+const apiPrefix = "/api/v1";
 
-const routes = (app:any) => {
-    // app.use(apiPrefix,blogs)
-    return app 
-}
+const routes = (app: any) => {
+  app.use(apiPrefix, router);
+  return app;
+};
 
-export default routes
-
+export default routes;
