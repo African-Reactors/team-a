@@ -1,9 +1,10 @@
-import router from ".././modules/auth/index";
+// import router from ".././modules/auth/index";
+import auth from '../modules/auth'
 
 const apiPrefix = "/api/v1";
 
 const routes = (app: any) => {
-  app.use(apiPrefix, router);
+  app.use(apiPrefix, auth);
   return app;
 };
 
