@@ -7,7 +7,8 @@ const express_1 = __importDefault(require("express"));
 const authController_1 = __importDefault(require("./authController"));
 const router = express_1.default.Router();
 router.post("/register", authController_1.default.register);
-router.post("/login", authController_1.default.login);
+router.post("/login", authController_1.default.login); // no middlewares on login / register 
 //router.post('/confirmPassword/:token', authController.confirmPassword)
-router.get("/profile", authController_1.default.loadProfile);
+// /confirmAccount/fhfjfjfjfkfkfkfk
+router.get("/profile", authController_1.default.loadProfile); // you can add an isAuth middleware here
 exports.default = router;

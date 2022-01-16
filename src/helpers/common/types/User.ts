@@ -1,9 +1,13 @@
 import { Document } from "mongoose";
 
 export interface IUser extends Document {
-  _id: string;
+  _id?: string;
   name: string;
   email: string;
   password: string;
-  access_token: string;
+  access_token?: string;
+  isActive?:boolean;
 }
+// interface 
+// type 
+// enum 

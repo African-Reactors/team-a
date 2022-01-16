@@ -9,13 +9,26 @@ import bcryptConfig from "../auth/bcryptConfig";
 import responseHandler from "../../helpers/responseHandler";
 import jwt from 'jsonwebtoken'; 
 import errorHandler from "../../helpers/errorHandler";
+import { IUser } from "../../helpers/common/types/User";
+import SendGridHelper from "../../helpers/sendGridHelper";
+
+
+// improvement
+// class authController { 
+
+//   static async register(req,res){
+
+//   }
+// }
 
 const authController = {
+  // registerAdmin(){
 
+  // }
   register: async (req: Request, res: Response) => {
     try {
-
-      const { name, email, password: passwordBody } = req.body;
+      // all crud ops are in the controller, the model is the db and db fields, the view is dependant on whether you have an api 1st design or using inbulit view handler
+      const { name, email, password: passwordBody }  = req.body;
 
       if (!name || !email || !passwordBody)
         return res.status(400).json({ message: "Missing data" });
@@ -23,14 +36,15 @@ const authController = {
       const isUserExists = await User.findOne({ email }).exec();
 
       if (isUserExists)
-        return res.status(401).json({ message: "User Already Exists" });
+        return res.status(409).json({ message: "User Already Exists" });
 
       const password = await bcrypt.hash(passwordBody, bcryptConfig.salt);
 
-      // 
+      //  always salt your password before storing in db
+
       const access_token = crypto.randomBytes(30).toString("hex");
 
-      const newUser = await new User({
+       await new User({
         name,
         email,
         password,
@@ -39,10 +53,11 @@ const authController = {
 
       //jwt 
 
+      // email-intergrations 
       const token = jwt.sign({ email } , 'africanReactor2022' , { expiresIn:'7d'})
 
-      // return res.status(201).json(newUser);
-      // handle email functionality here
+      await SendGridHelper.sendConfirmationMail(token,email);
+
       return responseHandler(res, 'Registration Success. Kindly check your email for an activation link', 201,token );
     } catch (err:any) {
       // return res.status(500).json({ message: "Internal Server Error" });
@@ -67,15 +82,16 @@ const authController = {
       if (!isPasswordValid)
         return res.status(401).json({ message: "Password is Wrong!" });
 
-      // intergrate jwt here  - Kevin 
+      if (!user.isActive){ 
+        return res.status(401).json({ message: "Activate your account to login" });
+      }
 
-      
+      // intergrate jwt here  - Kevin 
+      const token = jwt.sign({ email } , 'africanReactor2022' , { expiresIn:'7d'})      
       //make use of global responeHandler
       return res.status(200).json({
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        access_token: user.access_token,
+        token
+        // isAdmin: true / false
       });
     } catch (err) {
       // make use of global errorHandler 
@@ -85,8 +101,6 @@ const authController = {
 
   loadProfile: async (req: Request, res: Response) => {
     try {
-      // profile  req.headers['Authori] -  req.user = user 
-      // return responseHandler(res,'Profile loaded',200,req.user)
       const { id: _id } = req.params;
       const noSelect = ["-password", "-email", "-access_token"]; // excludes these fields from the user { }
       if (_id) {
@@ -100,6 +114,32 @@ const authController = {
       return res.status(500).json({ message: "Internal Server Error" });
     }
   },
+
+  
+  confirmAccount: async(  req:Request, res:Response ) => {
+    try {
+      const { token } = req.params;
+      const isValidToken =  jwt.verify(token, 'africanReactor2022' )
+      console.log(isValidToken); 
+      const user = await User.findOne({ email: isValidToken?.email }).exec();
+      user.isActive =  true 
+      user.save()
+      return responseHandler(res,"Account confirmation successful",200,user)
+
+      // return responseHandler(res, 'Registration Success. Kindly check your email for an activation link', 201,token );
+    } catch (error) {
+      return errorHandler(error.message, 500, res )
+    }
+  }
+
+  // requestNewActivationToken: async () => { 
+  //   {email } = req.body 
+  //   resend a new token ( payload : token (email, user {})) 
+  // }
+
+  // email intergrations  sendgrid / nodemailer  
+
+  // 
 };
 
 export default authController;
