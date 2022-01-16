@@ -3,12 +3,12 @@ import authController from "./authController";
 
 const router: Router = express.Router();
 
-router.post("/register", authController.register);
+router.post("/register",authController.register);
 
-router.post("/login", authController.login);
+router.post("/login", authController.login); // no middlewares on login / register 
 
-//router.post('/confirmPassword/:token', authController.confirmPassword)
+router.get("/profile", authController.loadProfile); // you can add an isAuth middleware here
 
-router.get("/profile", authController.loadProfile);
+router.get('/confirm/:token', authController.confirmAccount)
 
 export default router;
