@@ -119,7 +119,7 @@ const authController = {
   confirmAccount: async(  req:Request, res:Response ) => {
     try {
       const { token } = req.params;
-      const isValidToken =  jwt.verify(token, 'africanReactor2022' )
+      const isValidToken:any =  jwt.verify(token, 'africanReactor2022' )
       console.log(isValidToken); 
       const user = await User.findOne({ email: isValidToken?.email }).exec();
       user.isActive =  true 
@@ -131,15 +131,6 @@ const authController = {
       return errorHandler(error.message, 500, res )
     }
   }
-
-  // requestNewActivationToken: async () => { 
-  //   {email } = req.body 
-  //   resend a new token ( payload : token (email, user {})) 
-  // }
-
-  // email intergrations  sendgrid / nodemailer  
-
-  // 
 };
 
 export default authController;
